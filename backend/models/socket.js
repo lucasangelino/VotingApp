@@ -8,8 +8,23 @@ class Sockets {
   }
   socketEvents() {
     this.io.on("connection", (socket) => {
-      console.log("Client connected");
+      // emit
       socket.emit("bandList", this.bandList.getBands());
+
+      // on
+      socket.on("vote", (id) => {
+        this.bandList.vote(id);
+        this.io.emit("bandList", this.bandList.getBands());
+      });
+      socket.on("removeBand", (id) => {
+        this.bandList.removeBand(id);
+        this.io.emit("bandList", this.bandList.getBands());
+      });
+
+      socket.on("changeName", (data) => {
+        this.bandList.changeBandName(data.id, data.name);
+        this.io.emit("bandList", this.bandList.getBands());
+      });
     });
   }
 }
