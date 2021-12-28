@@ -20,9 +20,12 @@ class Sockets {
         this.bandList.removeBand(id);
         this.io.emit("bandList", this.bandList.getBands());
       });
-
       socket.on("changeName", (data) => {
         this.bandList.changeBandName(data.id, data.name);
+        this.io.emit("bandList", this.bandList.getBands());
+      });
+      socket.on("addBand", (name) => {
+        this.bandList.addBand(name);
         this.io.emit("bandList", this.bandList.getBands());
       });
     });
