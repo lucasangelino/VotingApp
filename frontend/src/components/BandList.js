@@ -1,11 +1,16 @@
 import * as React from "react";
+import { SocketContext } from "../context/socketContext";
 
-export default function BandList({ data, vote, removeBand, handleChangeName }) {
-  const [bands, setBands] = React.useState(data);
+export default function BandList() {
+  const [bands, setBands] = React.useState([]);
+  const { socket } = React.useContext(SocketContext);
 
   React.useEffect(() => {
-    setBands(data);
-  }, [data]);
+    socket.on("bandList", (bands) => {
+      setBands(bands);
+    });
+    return () => socket.off("bandList");
+  }, [socket]);
 
   const handleChange = (e, id) => {
     const newName = e.target.value;
@@ -16,8 +21,12 @@ export default function BandList({ data, vote, removeBand, handleChangeName }) {
 
   const onLostFocus = (e, id) => {
     const newName = e.target.value;
-    handleChangeName(id, newName);
+    socket.emit("changeName", { id, newName });
   };
+
+  const vote = (id) => socket.emit("vote", id);
+
+  const removeBand = (id) => socket.emit("removeBand", id);
 
   function createRow({ id, name, votes }) {
     return (

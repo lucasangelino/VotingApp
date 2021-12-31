@@ -1,14 +1,14 @@
 import * as React from "react";
-import { useSocket } from "../hooks/useSocket";
+import { SocketContext } from "../context/socketContext";
 
 export default function Band() {
   const [newBand, setNewBand] = React.useState("");
-  const { socket } = useSocket({serverUrl: `http://localhost:8080/`})
+  const { socket } = React.useContext(SocketContext);
 
   const onSubmit = (e) => {
     e.preventDefault();
     if (newBand.length === 0) return;
-    socket.emit("addBand", {name: newBand});
+    socket.emit("addBand", { name: newBand });
   };
 
   const handleChange = (e) => {
