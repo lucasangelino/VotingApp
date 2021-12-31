@@ -9,6 +9,7 @@ class Sockets {
   socketEvents() {
     this.io.on("connection", (socket) => {
       // emit
+      console.log('client connected')
       socket.emit("bandList", this.bandList.getBands());
 
       // on
@@ -24,7 +25,8 @@ class Sockets {
         this.bandList.changeBandName(data.id, data.name);
         this.io.emit("bandList", this.bandList.getBands());
       });
-      socket.on("addBand", (name) => {
+      socket.on("addBand", ({name}) => {
+        console.log('name')
         this.bandList.addBand(name);
         this.io.emit("bandList", this.bandList.getBands());
       });

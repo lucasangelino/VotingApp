@@ -1,34 +1,17 @@
 import * as React from "react";
-import io from "socket.io-client";
 
 // Components
 import Band from "./components/Band";
 import BandList from "./components/BandList";
+import { useSocket } from "./hooks/useSocket";
 
-const connectSocketServer = () => {
-  const socket = io("http://localhost:8080", {
-    transports: ["websocket"],
-  });
-  return socket;
-};
 
 function App() {
-  const [socket, setSocket] = React.useState(() => connectSocketServer());
-  const [online, setOnline] = React.useState(true);
+
   const [bands, setBands] = React.useState([]);
-
-  React.useEffect(() => {
-    socket.on("connect", () => {
-      setOnline(true);
-    });
-  }, [socket]);
-
-  React.useEffect(() => {
-    socket.on("disconnect", () => {
-      setOnline(false);
-    });
-    return () => socket.disconnect();
-  }, [socket]);
+  const {socket, online} = useSocket({
+    serverUrl: `http://localhost:8080/`
+  });
 
   React.useEffect(() => {
     socket.on("bandList", (bands) => {
@@ -47,10 +30,6 @@ function App() {
 
   const handleChangeName = (id, name) => {
     socket.emit("changeName", { id, name });
-  };
-
-  const addBand = (name) => {
-    socket.emit("addBand", name);
   };
 
   return (
@@ -78,7 +57,7 @@ function App() {
           />
         </div>
         <div className="col-4">
-          <Band addBand={addBand} />
+          <Band />
         </div>
       </div>
     </div>
