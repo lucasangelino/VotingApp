@@ -6,9 +6,9 @@ import Band from "./components/Band";
 
 // Socket
 import { SocketContext } from "./context/socketContext";
+import { BandChart } from "./components/BandChart";
 
 function HomePage() {
-  // const [bands, setBands] = React.useState([]);
   const { online } = React.useContext(SocketContext);
 
   return (
@@ -26,6 +26,12 @@ function HomePage() {
       <h1>Votos</h1>
 
       <hr />
+
+      <div className='row'>
+        <div className='col-8'>
+          <BandChart />
+        </div>
+      </div>
       <div className="row">
         <div className="col-8">
           <BandList />
